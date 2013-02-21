@@ -44,6 +44,75 @@ class Lingua::Number::EN is Lingua::Number::Base is rw {
 }
 
 
+class Lingua::Number::ES is Lingua::Number::Base is rw {
+
+	method setup {
+	######## $zero (typically not printed unless input == 0)
+	$.zero = 'cero';
+
+	$.negative = 'menos ';
+
+	######## @digit[exponent (i.e. place value)]
+
+	@.digit[0] = ['', <uno dos tres cuatro cinco seis siete ocho nueve diez
+			 once doce trece catorce quince dieciséis diecisiete dieciocho diecinueve veinte
+			 veintiuno veintidós veintitrés veinticuatro veinticinco veintiséis veintisiete veintiocho veintinueve> ];
+
+	@.digit[1] = [ '', { self.number[self.exp - 1] += 10 * self.number[self.exp]; Any; } xx 2,
+		 <treinta cuarenta cincuenta sesenta setenta ochenta noventa> ];
+
+	@.digit[2] = ['', <ciento doscientos trescientos cuatrocientos quinientos seiscientos setecientos ochocientos novecientos>];
+
+	@.digit[3..5] = @.digit[0..2];
+
+	####### @punct[exponent] is printed after @digit[exponent] if it is not '';
+	@.punct =  (    ' ', {(self.number[self.exp] > 1 and self.number[self.exp - 1] != 0) ?? ' y ' !! ' '}, ' ',
+		  ' mil ', {(self.number[self.exp] > 1 and self.number[self.exp-1] != 0) ?? ' y ' !! ' '}, ' '	,
+			 {self.num == 10**self.exp ?? 'ón ' !! 'ones '} );
+
+	####### when the numeric system repeats (en: thousand, es: mil, jp: sen)
+	$.group_size = 6;
+
+	####### large number scale  @scale[* div $group_size]
+	@.scale = ('', <milli billi trilli cuatrilli quintilli sextilli septilli octilli nonilli decilli> );
+	####### other numeric values
+	%.special =  ('Inf' => "infinito", '-Inf' => "infinito negativo", 'NaN' => "no es número");
+	}
+}
+
+class Lingua::Number::JP is Lingua::Number::Base is rw {
+
+	method setup {
+	######## $zero (typically not printed unless input == 0)
+	$.zero = 'ゼロ';
+	$.negative = 'マイナス';
+
+	######## @digit[exponent (i.e. place value)]
+
+	@.digit[0] = '', <一　二　三　四　五　六　七　八　九>;
+
+	@.digit[1] = '', '十', @.digit[0][2..9] »~» '十';
+
+	@.digit[2] = '', '百', @.digit[0][2..9] »~» "百";
+
+	@.digit[3] = '', '千', @.digit[0][2..9] »~» "千";
+
+	####### @punct[exponent] is printed after @digit[exponent] if it is not '';
+	@.punct =  '' xx 5;
+
+	####### when the numeric system repeats (en: thousand, es: mil, jp: sen)
+	$.group_size = 4;
+
+	####### large number scale  @scale[* div $group_size]
+	@.scale = '', <万 億 兆 京 垓 𥝱 穣 溝 澗 正 載 極 恒河沙 阿僧祇 那由他 不可思議 無量大数>;
+
+	####### other numeric values
+	%.special =  ('Inf' => "無限", '-Inf' => "マイナス無限", 'NaN' => "エヌエーエヌ");
+	}
+}
+
+
+
 module Lingua::Number {
 
 sub cardinal ($number, Str $lang) is export {
