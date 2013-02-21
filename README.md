@@ -18,3 +18,8 @@ This interface is definitely subject to change, but it's currently:
         say cardinal(287000457812, 'es');
         # prints "doscientos ochenta y siete mil milliones cuatrocientos cincuenta y siete mil ochocientos doce"
 
+## TODO
+
+This is designed to be extensible, so I'll have to tell about adding language packs.
+
+Also, support for decimals and ordinals.

@@ -37,7 +37,7 @@ if $lang eq 'en' {
 	####### other numeric values
 	%special =  ('Inf' => "infinity", '-Inf' => "negative infinity", 'NaN' => "not a number");
 }
-#@@@@@@@@@@@@@@@@@@@@@@@@
+
 if $lang eq 'es' {
 	######## $zero (typically not printed unless input == 0)
 	$zero = 'cero';
@@ -49,23 +49,23 @@ if $lang eq 'es' {
 			 once doce trece catorce quince dieciséis diecisiete dieciocho diecinueve veinte
 			 veintiuno veintidós veintitrés veinticuatro veinticinco veintiséis veintisiete veintiocho veintinueve> ];
 
-	@digit[1] = '', { @number[$exp-1] += 10 * @number[$exp]; Any; } xx 2,
-		 <treinta cuarenta cincuenta sesenta setenta ochenta noventa>;
+	@digit[1] = [ '', { @number[$exp-1] += 10 * @number[$exp]; Any; } xx 2,
+		 <treinta cuarenta cincuenta sesenta setenta ochenta noventa> ];
 
-	@digit[2] = '', <ciento doscientos trescientos quatrocientos quinientos seiscientos setecientos ochocientos novecientos>;
+	@digit[2] = ['', <ciento doscientos trescientos cuatrocientos quinientos seiscientos setecientos ochocientos novecientos>];
 
 	@digit[3..5] = @digit[0..2];
 
 	####### @punct[exponent] is printed after @digit[exponent] if it is not '';
-	@punct =      ' ', {(@number[$exp] > 1 and @number[$exp-1] != 0) ?? ' y ' !! ' '}, ' ',
+	@punct =  (    ' ', {(@number[$exp] > 1 and @number[$exp-1] != 0) ?? ' y ' !! ' '}, ' ',
 		  ' mil ', {(@number[$exp] > 1 and @number[$exp-1] != 0) ?? ' y ' !! ' '}, ' '	,
-			 {$number == 10**$exp ?? 'ón ' !! 'ones '};
+			 {$number == 10**$exp ?? 'ón ' !! 'ones '} );
 
 	####### when the numeric system repeats (en: thousand, es: mil, jp: sen)
 	$group_size = 6;
 
 	####### large number scale  @scale[* div $group_size]
-	@scale = '', <milli billi trilli cuatrilli>;
+	@scale = ('', <milli billi trilli cuatrilli quintilli sextilli septilli octilli nonilli decilli> );
 	####### other numeric values
 	%special =  ('Inf' => "infinito", '-Inf' => "infinito negativo", 'NaN' => "no es número");
 }
