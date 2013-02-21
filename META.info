@@ -1,0 +1,8 @@
+{
+  "name"        : "Lingua::Number",
+  "version"     : "*",
+  "description" : "An attempt to do multi-language translations of numbers",
+  "author"      : "labster",
+  "depends"     : [ ],
+  "source-url"  : "git://github.com/labster/p6-Lingua-Number.git"
+}
