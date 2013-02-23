@@ -25,7 +25,8 @@ method to_words ($number) is export {
 	}
 
 	if @.number.elems > ((+@.scale.elems - 1) * $.group_size) {
-		return $text ~ "umpteen zillion";
+		#return $text ~ "umpteen zillion";
+		fail "Number is too large; maximum size is {(+@.scale.elems * $.group_size) -1 }", ;
 	}
 
 	loop ($.exp = +@.number - 1; $.exp >= 0; --$.exp) {
@@ -129,6 +130,10 @@ class Lingua::Number::EN is Lingua::Number::Base is rw {
 		~ ( $.number > 1 ?? 'ths' !! 'th') } ;
 		}
 
+		if $mode eq 'ordinal' {
+			@.digit[1][0] = '';
+		}
+
 		if $slang eq 'digital fraction' {
 			$.group_size = 1;
 			($.decimal_point) = (' point ', '');
@@ -146,12 +151,12 @@ class Lingua::Number::EN is Lingua::Number::Base is rw {
 	}
 
 	method ordinal (Int $number, Str $lang = 'en', Str $slang = '') {
-		self.setup('cardinal', $slang);
+		self.setup('ordinal', $slang);
 		my $text = self.to_words($number);
 	# admittedly this approach is pretty sketch, but we only check 8 cases
 	###  which is a lot easier than keeping track of the last number
 		my %ords = 'one'=>'first', 'two'=>'second', 'three'=>'third', 'five'=>'fifth', 'eight'=>'eighth',
-			'nine'=>'ninth', 'twelve'=>'twelth', 'y'=>'ieth';
+			'nine'=>'ninth', 'twelve'=>'twelfth', 'y'=>'ieth';
 	#workaround for rakudobug #82108
 		if $text ~~ /< one two three five eight nine twelve y > $/ {
 			$text ~~ s¡ ( < one two three five eight nine twelve y > ) $
@@ -313,18 +318,18 @@ class Lingua::Number::JP is Lingua::Number::Base is rw {
 
 module Lingua::Number {
 
-sub cardinal ($number, Str $lang, Str $slang = '') is export {
+sub cardinal ($number, Str $lang = 'en', Str $slang = '') is export {
 	my \l = ::("Lingua::Number::{$lang.uc}").new;
 	l.cardinal($number, $slang);
 }
 
 
-sub ordinal ($number, Str $lang, Str $slang = '') is export {
+sub ordinal ($number, Str $lang = 'en', Str $slang = '') is export {
 	my \l = ::("Lingua::Number::{$lang.uc}").new;
 	l.ordinal($number, $slang);
 }
 
-sub real_num ($number, Str $lang, Str $slang = '') is export {
+sub real_num ($number, Str $lang = 'en', Str $slang = '') is export {
 	my \l = ::("Lingua::Number::{$lang.uc}").new;
 	l.real($number, $slang);
 }
