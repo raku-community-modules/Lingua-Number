@@ -14,19 +14,19 @@ This interface is definitely subject to change, but it's currently:
         say cardinal($number, $language);
         	# prints "three million one hundred twenty-three thousand four hundred fifty-six"
 
-        say cardinal 764013, 'jp';
+        say cardinal 764013, 'ja';
         	# prints "七十六万四千十三"
         say cardinal(287000457812, 'es');
         	# prints "doscientos ochenta y siete mil milliones cuatrocientos cincuenta y siete mil ochocientos doce"
 	
 	ordinal 234, 'en';
 	  # ordinal numbers
-	real_num 2398.343, 'jp';
+	real_num 2398.343, 'ja';
 	  # decimal fraction numbers
 
 ## DESCRIPTION
 
-This module takes an integer input, and translates it into a natural language.  English is the default language, but other languages can be added.  The module currently supports 'en', 'es', and 'jp' (kanji) translations.
+This module takes an integer input, and translates it into a natural language.  English is the default language, but other languages can be added.  The module currently supports 'en', 'es', and 'ja' (kanji) translations.
 
 Currently, three functions are exported:
 
@@ -38,7 +38,7 @@ Returns the number written as a cardinal (counting) number.
 
 Returns the number written as an ordinal (ranking) number.
 
-## real_num ( $number, $language = 'en', $slang = '')
+### real_num ( $number, $language = 'en', $slang = '')
 
 Returns the whole and fractional part of the number, written as a decimal fraction.
 
