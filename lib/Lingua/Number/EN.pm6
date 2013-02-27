@@ -15,7 +15,7 @@ method setup (Str $mode = 'cardinal', Str $slang = '') {
 	@.digit[0] = ['', <one two three four five six seven eight nine ten
 		eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen> ];
 
-	@.digit[1] = [ {self.number[self.exp-1] != 0 ?? 'and' !! '' },
+	@.digit[1] = [ '',
 		      { self.number[self.exp-1] += 10 * self.number[self.exp]; ''; },
 		      <twenty thirty forty fifty sixty seventy eighty ninety> ];
 
@@ -23,8 +23,9 @@ method setup (Str $mode = 'cardinal', Str $slang = '') {
 
 	####### @punct[exponent] is printed after @digit[exponent] if it is defined;
 	######### last element is printed after @.scale
-	@.punct =  ( ' ', {(self.number[self.exp] > 1 and self.number[self.exp-1] != 0) ?? '-' !! ' '},
-		     ' ', ' ' );
+	@.punct =  ( ' ',
+		     {(self.number[self.exp] > 1 and self.number[self.exp-1] != 0) ?? '-' !! ' '},
+		     { any(self.number[self.exp-1..self.exp-2]) != 0 ?? ' and ' !! ' '}, ' ' );
 
 	####### large number scale  @scale[* div $group_size]
 	@.scale =  ('', <thousand million billion trillion quadrillion quintillion sextillion octillion nonillion decillion>);
@@ -39,7 +40,9 @@ method setup (Str $mode = 'cardinal', Str $slang = '') {
 	%.special =  ('Inf' => "infinity", '-Inf' => "negative infinity", 'NaN' => "not a number");
 
 	####### put before, in the middle, and after numbers
-	($.prefix, $.decimal_point, $.postfix) = ('', ' and ', '');
+	$.prefix = '';
+	$.decimal_point = ' and ';
+	$.postfix = '';
 
 	if $mode eq 'fractional' {
 		$.postfix =  { (' ten', ' hundred', (' ' <<~<< @.scale[1..*] Z " ten-" <<~<< @.scale[1..*] Z " hundred-" <<~<< @.scale[1..*]).flat).flat.[$.group_size] 
@@ -52,16 +55,19 @@ method setup (Str $mode = 'cardinal', Str $slang = '') {
 
 	if $slang eq 'digital fraction' {
 		$.group_size = 1;
-		($.decimal_point) = (' point ', '');
+		$.decimal_point = ' point ';
 		@.digit[0] = [<oh one two three four five six seven eight nine>];
-		@.scale = '' .. *;
+		@.scale := '' .. *;
 		@.punct = ('-', '');
 	}
 	if $slang eq 'long count' {
 		$.group_size = 6;
 		@.digit[3..5] = @.digit[0..2];
-		@.punct = ( ' ', {(self.number[self.exp] > 1 and self.number[self.exp-1] != 0) ?? '-' !! ' '}, ' ',
-			' thousand ', {(self.number[self.exp] > 1 and self.number[self.exp-1] != 0) ?? '-' !! ' '}, ' ', ' ' );
+		@.punct = @.punct.flat xx 2;
+		@.punct[3] = ' thousand, ';
+		#( ' ', {(self.number[self.exp] > 1 and self.number[self.exp-1] != 0) ?? '-' !! ' '}, ' ',
+		#	' thousand ', {(self.number[self.exp] > 1 and self.number[self.exp-1] != 0) ?? '-' !! ' '}, ' ', ' ' );
+		@.scale =  ('', <million billion trillion quadrillion quintillion sextillion octillion nonillion decillion>);
 	}
 	
 }
