@@ -3,6 +3,6 @@
   "version"     : "*",
   "description" : "An attempt to do multi-language translations of numbers",
   "author"      : "labster",
-  "depends"     : [ ],
+  "depends"     : [ "XML" ],
   "source-url"  : "git://github.com/labster/p6-Lingua-Number.git"
 }

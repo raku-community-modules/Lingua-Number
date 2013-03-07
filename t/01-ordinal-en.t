@@ -88,8 +88,9 @@ is ordinal(1000002300000), "one trillion two million three hundred thousandth", 
 # largest supported number [currently 999,999,999,999,999]
 is ordinal(999999999999999), "nine hundred ninety-nine trillion nine hundred ninety-nine billion nine hundred ninety-nine million nine hundred ninety-nine thousand nine hundred ninety-ninth", "999999999999999 is nine hundred ninety-nine trillion nine hundred ninety-nine billion nine hundred ninety-nine million nine hundred ninety-nine thousand nine hundred ninety-ninth";
 
-# what about a number that's two big?
+# what about a number that's too big?
 my $googol = ('1' ~ ('0' xx 100).join).Int; # a googol!
-dies_ok {ordinal($googol);}, "fails with 1 googol";
+is ordinal($googol), '10,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000.',
+ "formats digits with 1 googol";
 
 done;
