@@ -105,8 +105,7 @@ sub rule2text (Str $lingua, Str $ruletype, $number) is export {
 		
 
 		if $func ~~ /^\#/ {
-			my $match = $func ~~ / $<comma>=[<-[#]>*] $<len>=['#'* '0'] $<dec>=[<-[0#]>*] /;
-			@items.push: format_digital($number, ~$match<len>.chars, ~$match<comma>, ~$match<dec>);
+			@items.push: format_digital($func, $number);
 		}
 		else {
 			@items.push: $before ~ rule2text($lingua, $func, $next-number) ~ $after;
@@ -139,22 +138,29 @@ sub prev-digits ($number, $rule_val, $radix = 10) {
 	}
 }
 
-sub format_digital ($number, $comma_length, $comma_char = ',' , $decimal_point = '.') {
-	if $number.Int == $number { # we have a whole number
-		my $out;
-		my ($i, $maxi) = $number.chars xx 2;
-		for $number.comb -> $n {
-			$out ~= $comma_char if $i %% $comma_length and $i != $maxi; $i--;
-			$out ~= $n;
-		}
-		$out;
+sub format_digital ($func, $number is copy) {
+	my $match = $func ~~ / ',' $<len>=['#'* '0'] ['.' | $] /;
+	my $grouping_size = (~$match<len>).chars;
+	say join '|', $func, ~$match<len>, $grouping_size;
+
+	my $grouping_char = ','; #but really lookup okay?
+	my $decimal_point = '.';
+
+	my $fractional_part = '';
+	if $number.Int != $number {
+		($number, $fractional_part) = $number.split('.');
+		$fractional_part = $decimal_point ~ $fractional_part;
+	}	
+
+	my $out;
+	my ($i, $maxi) = $number.chars xx 2;
+	for $number.comb -> $n {
+		$out ~= $grouping_char if $i %% $grouping_size and $i != $maxi;
+		$i--;
+		$out ~= $n;
 	}
-	else {
-		my ($ipart, $fpart) = split /\./, $number;
-		[~] format_digital($ipart, $comma_length, $comma_char, $decimal_point),
-			$decimal_point,
-			$fpart;
-	}
+	$out ~ $fractional_part;
+
 }
 
 
