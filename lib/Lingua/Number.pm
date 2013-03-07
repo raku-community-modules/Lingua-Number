@@ -10,7 +10,8 @@ sub load_xml ($lingua) {
 	my @locs := @*INC.grep: { "$_/Lingua/Number/rbnf-xml".path.e }
 	my $xml = from-xml(file => "@locs[0]/Lingua/Number/rbnf-xml/$lingua.xml");
 	
-	my @rulesets := $xml.elements(:TAG<rbnf>)[0].[0].elements(:TAG<ruleset>);
+	#my @rulesets := $xml.elements(:TAG<rbnf>)[0].[0].elements(:TAG<ruleset>);
+	my @rulesets := $xml.elements(:TAG<rbnf>)[0].elements(:TAG<rulesetGrouping>)».elements(:TAG<ruleset>);
 
 	my @nonprivaterulesets;
 	for @rulesets -> $rulesetxml {
@@ -163,7 +164,7 @@ sub Lingua-Number-rulesets (Str $lingua) is export {
 }
 
 
-sub cardinal ($number, Str $lingua = 'en', :$gender = '', :$plural = False, :$slang = '') is export {
+sub get_gender ($lingua, $gender) {
 	my $w_gender =
 		do given $gender {
 			when m:i/^ 'm' / { '-masculine' }    #:
@@ -172,32 +173,37 @@ sub cardinal ($number, Str $lingua = 'en', :$gender = '', :$plural = False, :$sl
 			default { Nil };     
 		};
 	if $lingua eq any( <ar ca cs hr es fr he hi it lt lv mr nl pl pt ro ru sk sl sr uk ur zh zh_Hant>) {
-		$w_gender = '-masculine';
+		$w_gender ||= '-masculine';
 	}
-	my $w_slang = $slang ?? "-$slang" !! '';
-	
-	my $ruleset = [~] "spellout-cardinal", $w_gender, $w_slang;
-	rule2text($lingua, $ruleset, $number);
-
+	$w_gender;
 }
 
-sub ordinal ($number, Str $lingua = 'en', :$gender = '', :$plural = False, :$slang = '') is export {
-	my $w_gender =
-		do given $gender {
-			when m:i/^ 'm' / { '-masculine' }    #:
-			when m:i/^ 'f' / { '-feminine' }     #:
-			when m:i/^ 'n' / { '-neuter' }       #:
-			default { Nil };     
-		};
-	if $lingua eq any( <ar ca cs hr es fr he hi it lt lv mr nl pl pt ro ru sk sl sr uk ur zh zh_Hant>) {
-		$w_gender = '-masculine';
-	}
-	my $w_slang = $slang ?? "-$slang" !! '';
-	
-	my $ruleset = [~] "spellout-ordinal", $w_gender, $w_slang;
-	rule2text($lingua, $ruleset, $number);
+sub cardinal ($number, Str $lingua = 'en', :$gender is copy = '', :$plural = False, :$slang is copy = '') is export {
+	$gender = get_gender($lingua, $gender);
+	$slang = $slang ?? "-$slang" !! '';
 
+	my $ruleset = [~] "spellout-cardinal", $gender, $slang;
+	rule2text($lingua, $ruleset, $number);
 }
+
+
+sub ordinal ($number, Str $lingua = 'en', :$gender is copy = '', :$plural = False, :$slang is copy = '') is export {
+	$gender = get_gender($lingua, $gender);
+	$slang = $slang ?? "-$slang" !! '';
+	
+	my $ruleset = [~] "spellout-ordinal", $gender, $slang;
+	rule2text($lingua, $ruleset, $number);
+}
+
+
+sub ordinal-digits ($number, Str $lingua = 'en', :$gender is copy = '', :$plural = False, :$slang is copy = '') is export {
+	$gender = get_gender($lingua, $gender);
+	$slang = $slang ?? "-$slang" !! '';
+	
+	my $ruleset = [~] "digits-ordinal", $gender, $slang;
+	rule2text($lingua, $ruleset, $number);
+}
+
 
 sub roman-numeral ($number) is export {
 	rule2text('root', 'roman-upper', $number);
