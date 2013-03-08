@@ -19,9 +19,8 @@ is ordinal(3123456, 'ja'), "第三百十二万三千四百五十六", "nihongo d
 
 say "#ordinal digits";
 is ordinal-digits(76531, 'en'), "76,531st", "english 1st";
-skip "number format (separtors) for non-english", 2;
-# is ordinal-digits(76532, 'es', gender =>'f'), "76532ª", "spanish feminine";
-# is ordinal-digits(76532, 'es', gender =>'M'), "76532º", "spanish masculine";
+is ordinal-digits(76532, 'es', gender =>'f'), "76.532ª", "spanish feminine";
+is ordinal-digits(76532, 'es', gender =>'M'), "76.532º", "spanish masculine";
 
 say "# roman numerals";
 is roman-numeral(1999), "MCMXCIX", "party like it's MCMXCIX";

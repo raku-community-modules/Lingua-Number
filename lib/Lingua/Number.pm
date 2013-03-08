@@ -4,9 +4,12 @@ module Lingua::Number;
 use XML;
 use JSON::Tiny;
 
+my $data_location = $?FILE.split( /'.pm' $/ ).[0];   # i.e. lib/Lingua/Number/
 
 my %rbnf;
 my %rbnf-rulesets;
+
+my %numberformat := from-json("$data_location/digitformat.json".IO.open.slurp);
 
 sub load_xml ($lingua) {
 	my @locs := @*INC.grep: { "$_/Lingua/Number/rbnf-xml".path.e }
@@ -41,8 +44,7 @@ sub load_xml ($lingua) {
 
 
 sub load_json ($lingua) {
-	my @locs := @*INC.grep: { "$_/Lingua/Number/rbnf-json".path.e }
-	my $json = from-json("@locs[0]/Lingua/Number/rbnf-json/$lingua.json".IO.open.slurp);
+	my $json = from-json("$data_location/rbnf-json/$lingua.json".IO.open.slurp);
 
 	my @rulesetnames;
 
@@ -141,7 +143,7 @@ sub rule2text (Str $lingua, Str $ruletype, $number) is export {
 		
 
 		if $func ~~ /^\#/ {
-			@items.push: format_digital($func, $number);
+			@items.push: format_digital($func, $lingua, $number);
 		}
 		else {
 			@items.push: $before ~ rule2text($lingua, $func, $next-number) ~ $after;
@@ -174,13 +176,13 @@ sub prev-digits ($number, $rule_val, $radix = 10) {
 	}
 }
 
-sub format_digital ($func, $number is copy) {
+sub format_digital ($func, $lingua, $number is copy) {
 	my $match = $func ~~ / ',' $<len>=['#'* '0'] ['.' | $] /;
 	my $grouping_size = (~$match<len>).chars;
 	#say join '|', $func, ~$match<len>, $grouping_size;
 
-	my $grouping_char = ','; #but really lookup okay?
-	my $decimal_point = '.';
+	my $grouping_char = %numberformat{$lingua}<group> // ',';
+	my $decimal_point = %numberformat{$lingua}<decimal> // '.';
 
 	my $fractional_part = '';
 	if $number.Int != $number {
@@ -260,5 +262,4 @@ sub timetest {
 	load_json('en'); load_json('it'); load_json('es');
 	say "json:", now - $t;
 }
-
 
