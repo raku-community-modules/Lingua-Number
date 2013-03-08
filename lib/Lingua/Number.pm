@@ -2,6 +2,8 @@ use v6;
 module Lingua::Number;
 
 use XML;
+use JSON::Tiny;
+
 
 my %rbnf;
 my %rbnf-rulesets;
@@ -37,6 +39,40 @@ sub load_xml ($lingua) {
 	1;
 }
 
+
+sub load_json ($lingua) {
+	my @locs := @*INC.grep: { "$_/Lingua/Number/rbnf-json".path.e }
+	my $json = from-json("@locs[0]/Lingua/Number/rbnf-json/$lingua.json".IO.open.slurp);
+
+	my @rulesetnames;
+
+	my @rulesets := $json.<ldml>[0]<rbnf>[0]<ruleset>;
+	for @rulesets -> $rs {
+		my $ruletype = $rs.<type>;
+		$ruletype = "%" ~ $ruletype if $rs<access>.defined;
+		@rulesetnames.push: $ruletype;
+		
+		my @rulevals;
+		#say $rs<rbnfrule>.perl;
+		for $rs<rbnfrule>.list -> %r {
+			#say $ruletype, ":", %r.perl; #exit;
+			%rbnf{$lingua}{$ruletype}{ %r<value> } = {
+				text => cleanrule( %r<text> ),
+				radix => +(%r<radix> // 10) };
+			@rulevals.push: %r<value>;
+		}
+		%rbnf{$lingua}{$ruletype}<values> = [ @rulevals.grep( { .Numeric.defined // Nil } )];
+
+	}
+
+	%rbnf-rulesets{$lingua} = @rulesetnames.perl;
+	1;
+}
+	
+#load_json('en');
+
+
+
 sub cleanrule (Str $ruletext is copy) {
 	$ruletext ~~ s/ ';' .* $ //;
 	$ruletext ~~ s/^ \s* \' //;
@@ -52,7 +88,7 @@ my $ruleregex = rx/^ $<begin>=[ <-[←=→\[]>* ] [
 
 
 sub rule2text (Str $lingua, Str $ruletype, $number) is export {
-	%rbnf{$lingua}.defined or load_xml($lingua);
+	%rbnf{$lingua}.defined or load_json($lingua);
 
 	my $ruleset := %rbnf{$lingua}{$ruletype}
 		or fail "Invalid ruleset $ruletype for language $lingua.";
@@ -141,7 +177,7 @@ sub prev-digits ($number, $rule_val, $radix = 10) {
 sub format_digital ($func, $number is copy) {
 	my $match = $func ~~ / ',' $<len>=['#'* '0'] ['.' | $] /;
 	my $grouping_size = (~$match<len>).chars;
-	say join '|', $func, ~$match<len>, $grouping_size;
+	#say join '|', $func, ~$match<len>, $grouping_size;
 
 	my $grouping_char = ','; #but really lookup okay?
 	my $decimal_point = '.';
@@ -165,7 +201,7 @@ sub format_digital ($func, $number is copy) {
 
 
 sub Lingua-Number-rulesets (Str $lingua) is export {
-	%rbnf-rulesets{$lingua}.defined or load_xml($lingua);
+	%rbnf-rulesets{$lingua}.defined or load_json($lingua);
 	%rbnf-rulesets{$lingua};
 }
 
@@ -214,3 +250,15 @@ sub ordinal-digits ($number, Str $lingua = 'en', :$gender is copy = '', :$plural
 sub roman-numeral ($number) is export {
 	rule2text('root', 'roman-upper', $number);
 }
+
+sub timetest {
+	my $t = now;
+	load_xml('en'); load_xml('it'); load_xml('es');
+	say "xml:", now - $t;
+	%rbnf = Nil;
+	$t = now;
+	load_json('en'); load_json('it'); load_json('es');
+	say "json:", now - $t;
+}
+
+
