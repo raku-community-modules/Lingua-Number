@@ -5,24 +5,20 @@ Lingua::Number - A Perl 6 attempt to do multi-language translations of numbers
 
 ## SYNOPSIS
 
-This interface might be subject to change, but it's currently:
-
-        use Lingua::Number;
+	use Lingua::Number;
         
-        my $number = 3123456;
-        my $language = 'en';
-        say cardinal($number, $language);
-        	# prints "three million one hundred twenty-three thousand four hundred fifty-six"
+	my $number = 451;
+	my $language = 'en';
+	say cardinal($number, $language);	# "four hundred fifty-one"
+	say ordinal($number, $language);	# "four hundred fifty-first"
+	say ordinal-digits($number, $language) 	# "451st"
 
-        say cardinal 764013, 'ja';	# prints "七十六万四千十三"
-        say cardinal(287000457812, 'es');
-        	# prints "doscientos ochenta y siete mil millones cuatrocientos cincuenta y siete mil ochocientos doce"
-	say cardinal 1.23;	# "one point two three"
+	say cardinal 764013, 'ja';			# "七十六万四千十三"
+	say cardinal 54321, 'es', gender => 'F';	# "cincuenta y cuatro mil tres­cientas veintiuna"
+	say cardinal 1.23;				# English is default, prints "one point two three"
 	
-	say ordinal 234, 'en';	# ordinal numbers
-
-	say roman-numeral Date.today.year;	# "MMXIII" when I wrote this
-	say rule2text 'en', 'spellout-numbering-year', Date.today.year; # "twenty thirteen"
+	say roman-numeral Date.today.year;		# "MMXIII" when I wrote this
+	say rule2text 'en', 'spellout-numbering-year', Date.today.year;   # "twenty thirteen"
 
 
 ## DESCRIPTION
@@ -51,7 +47,7 @@ Anyway, this is mainly exported to aid in developing new rules.
 
 ### Lingua-Number-rulesets (Str $lingua)
 
-Returns an array of rulesets available to use by `rule2text` in the given language.  Mostly for debugging purposes.
+Returns an array of rulesets available to use by `rule2text` in the given language.  Mostly for debugging purposes.  Rulesets beginning in `%` are subrules, and usually should not be used to format full numbers.
 
 ## USAGE NOTES
 
@@ -59,27 +55,25 @@ Note that whenever you use a language for the first time, it will take much long
 
 ## SEE ALSO
 
-* Lingua::Numbers::EN::Ordinal - a predecessor module to this one.
+* [Lingua::Numbers::EN::Ordinal](https://github.com/lue/Lingua--EN--Numbers--Ordinal/) - a predecessor module to this one.
 
 ## TODO
 
-Import number format data from CLDR so we can actually format digital numbers locally.  Along with the Inf/NaN stuff.
+Handle Inf/NaN cases.
 
 Write tests for some more languages, especially for gender.
 
 Write some English fractional rules.
 
-Check that slangs are working.
-
 ## AUTHOR
 
 Brent "Labster" Laabs, 2013.
 
-Contact the author at bslaabs@gmail.com or as labster on #perl6.
+Contact the author at bslaabs@gmail.com or as labster on #perl6.  File [bug reports](https://github.com/labster/p6-Lingua-Number/issues) on github.
 
 ## COPYRIGHT
 
 The code under the same terms as Perl 6; see the LICENSE file for details.
 
-Rule-Based Number Format XML data from the [Unicode CLDR project](http://cldr.unicode.org/) is licensed under the Unicode License; see unicode-license.txt for details.  These files are from CLDR 22.1, and they haven't been modified yet.
+Rule-Based Number Format XML data from the [Unicode CLDR project](http://cldr.unicode.org/) is licensed under the Unicode License; see unicode-license.txt for details.  These files are from CLDR 22.1; translations to JSON are included.  Modified files: "ja.xml" to add a romaji translation.
 
