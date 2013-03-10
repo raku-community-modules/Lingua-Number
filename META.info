@@ -1,8 +1,8 @@
 {
   "name"        : "Lingua::Number",
   "version"     : "*",
-  "description" : "An attempt to do multi-language translations of numbers",
+  "description" : "Write cardinal and ordinal numbers with words in over fifty languages",
   "author"      : "labster",
-  "depends"     : [ "XML" ],
+  "depends"     : [ "XML", "JSON::Tiny" ],
   "source-url"  : "git://github.com/labster/p6-Lingua-Number.git"
 }
