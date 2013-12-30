@@ -142,7 +142,7 @@ sub rule2text (Str $lingua, Str $ruletype, $number) is export {
 		$func ||= $ruletype;
 		
 
-		if $func ~~ /^\#/ {
+		if $func ~~ /^'#'/ {
 			@items.push: format_digital($func, $lingua, $number);
 		}
 		else {
