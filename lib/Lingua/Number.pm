@@ -214,7 +214,7 @@ sub get_gender ($lingua, $gender) {
 			when m:i/^ 'm' / { '-masculine' }    #:
 			when m:i/^ 'f' / { '-feminine' }     #:
 			when m:i/^ 'n' / { '-neuter' }       #:
-			default { Nil };     
+			default { '' };
 		};
 	if $lingua eq any( <ar ca cs hr es fr he hi it lt lv mr nl pl pt ro ru sk sl sr uk ur zh zh_Hant>) {
 		$w_gender ||= '-masculine';
