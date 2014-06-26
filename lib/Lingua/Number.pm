@@ -125,7 +125,7 @@ sub rule2text (Str $lingua, Str $ruletype, $number) is export {
 	my $match = $rule<text> ~~ $ruleregex;
 	
 	my @items;
-	for ($match<func> Z $match<arrow>)».Str -> $func is copy, $arrow is copy {
+	for ($match<func>.list Z $match<arrow>.list)».Str -> $func is copy, $arrow is copy {
 		my ($next-number, $before, $after) = ('' xx 3);
 		if $arrow eq '[' {
 			my $m2 = $func ~~ $ruleregex;
