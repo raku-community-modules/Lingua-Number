@@ -26,7 +26,7 @@
                 "sk.json", "sl.json", "sq.json", "sr.json", "sr_Latn.json", "sv.json",
                 "ta.json", "th.json", "tr.json", "uk.json", "vi.json", "zh.json",
                 "zh_Hant.json", "zh_Hant_HK.json" ],
-    "lib/Lingua/Number/rbnf-xml :
+    "lib/Lingua/Number/rbnf-xml" :
                 [ "af.xml", "am.xml", "ar.xml", "az.xml", "be.xml", "bg.xml", "bs.xml",
                 "ca.xml", "cs.xml", "cy.xml", "da.xml", "de.xml", "ee.xml", "el.xml",
                 "en.xml", "eo.xml", "es.xml", "es_419.xml", "es_AR.xml", "es_BO.xml",
