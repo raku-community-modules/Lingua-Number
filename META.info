@@ -43,6 +43,5 @@
                 "pt_TL.xml", "ro.xml", "root.xml", "ru.xml", "se.xml", "sk.xml", "sl.xml",
                 "sq.xml", "sr.xml", "sr_Latn.xml", "sv.xml", "ta.xml", "th.xml", "tr.xml",
                 "uk.xml", "vi.xml", "zh.xml", "zh_Hant.xml", "zh_Hant_HK.xml" ]
-            }
     }
 }
