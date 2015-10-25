@@ -1,4 +1,10 @@
+branches:
+  except:
+    - gh-pages
 language: perl6
+sudo: false
+perl6:
+  - latest
 install:
-    - rakudobrew build-panda 2015.07
-    - panda install XML JSON::Tiny
+  - rakudobrew build-panda
+  - panda installdeps .
