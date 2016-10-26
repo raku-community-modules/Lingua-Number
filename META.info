@@ -1,4 +1,5 @@
 {
+  "perl"        : "6.*",
   "name"        : "Lingua::Number",
   "version"     : "*",
   "description" : "Write cardinal and ordinal numbers with words in over fifty languages",
