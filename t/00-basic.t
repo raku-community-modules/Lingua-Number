@@ -1,7 +1,8 @@
 use Lingua::Number;
 use Test;
 
-plan 16;
+plan *;
+
 say "# cardinal integers";
 is cardinal(3123456, 'en'), "three million one hundred twenty-three thousand four hundred fifty-six", "basically works in english";
 is cardinal(3123456, 'es'), "tres millones ciento veintitrés mil cuatrocientos cincuenta y seis", "español también";
@@ -30,5 +31,4 @@ is ordinal(8888888888888888888, 'ja', slang =>'romaji'), "dai happyaku hachi-juu
 say "# roman numerals";
 is roman-numeral(1999), "MCMXCIX", "party like it's MCMXCIX";
 
-
-
+done-testing;
