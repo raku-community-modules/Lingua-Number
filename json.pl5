@@ -1,6 +1,6 @@
 =pod
 
-Converts a folder full of $language.xml files to JSON format, for use in the Perl 6 version of Lingua::Number.
+Converts a folder full of $language.xml files to JSON format, for use in the Raku version of Lingua::Number.
 
 =cut
 
