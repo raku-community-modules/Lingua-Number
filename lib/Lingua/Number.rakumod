@@ -49,9 +49,9 @@ sub load_json ($lingua) {
         @rulesetnames.push: $ruletype;
 
         my @rulevals;
-        #say $rs<rbnfrule>.perl;
+        #say $rs<rbnfrule>.raku;
         for $rs<rbnfrule>.list -> %r {
-            #say $ruletype, ":", %r.perl; #exit;
+            #say $ruletype, ":", %r.raku; #exit;
             %rbnf{$lingua}{$ruletype}{ %r<value> } = {
                 text => cleanrule( %r<text> ),
                 radix => +(%r<radix> // 10) };
@@ -61,7 +61,7 @@ sub load_json ($lingua) {
 
     }
 
-    %rbnf-rulesets{$lingua} = @rulesetnames.perl;
+    %rbnf-rulesets{$lingua} = @rulesetnames.raku;
     1;
 }
 
